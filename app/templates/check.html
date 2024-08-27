@@ -1,0 +1,48 @@
+<!-- app/templates/check.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+    <div id="app">
+        <form action="{{ PayGateWay }}" method="post">
+            <label for="MerchantID">MerchantID:</label>
+            <input type="text" id="MerchantID" name="MerchantID" value="{{ MerchantID }}" readonly /><br/>
+
+            <label for="TradeSha">TradeSha:</label>
+            <input type="text" id="TradeSha" name="TradeSha" value="{{ order.shaEncrypt }}" readonly /><br/>
+
+            <label for="TradeInfo">TradeInfo:</label>
+            <input type="text" id="TradeInfo" name="TradeInfo" value="{{ order.aesEncrypt }}" readonly /><br/>
+
+            <label for="TimeStamp">TimeStamp:</label>
+            <input type="text" id="TimeStamp" name="TimeStamp" value="{{ order.TimeStamp }}" readonly /><br/>
+
+            <label for="Version">Version:</label>
+            <input type="text" id="Version" name="Version" value="{{ Version }}" readonly /><br/>
+
+            <label for="NotifyUrl">NotifyUrl:</label>
+            <input type="text" id="NotifyUrl" name="NotifyUrl" value="{{ NotifyUrl }}" readonly /><br/>
+
+            <label for="ReturnUrl">ReturnUrl:</label>
+            <input type="text" id="ReturnUrl" name="ReturnUrl" value="{{ ReturnUrl }}" readonly /><br/>
+
+            <label for="MerchantOrderNo">MerchantOrderNo:</label>
+            <input type="text" id="MerchantOrderNo" name="MerchantOrderNo" value="{{ order.MerchantOrderNo }}" readonly /><br/>
+
+            <label for="Amt">Amt:</label>
+            <input type="text" id="Amt" name="Amt" value="{{ order.Amt }}" readonly /><br/>
+
+            <label for="ItemDesc">ItemDesc:</label>
+            <input type="text" id="ItemDesc" name="ItemDesc" value="{{ order.ItemDesc }}" readonly /><br/>
+
+            <label for="Email">Email:</label>
+            <input type="text" id="Email" name="Email" value="{{ order.Email }}" readonly /><br/>
+
+            <button type="submit">送出</button>
+        </form>
+    </div>
+</body>
+</html>
