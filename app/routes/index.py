@@ -44,16 +44,26 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 
-# 連接到資料庫
-conn = psycopg2.connect(DATABASE_URL)
-# 使用 conn 來執行資料庫操作
-cursor = conn.cursor()
-cursor.execute("SELECT * FROM member;")
-results = cursor.fetchall()
-print(results)
-# 關閉連接
-cursor.close()
-conn.close()
+try:
+    # 连接到数据库
+    conn = psycopg2.connect(DATABASE_URL)
+    # 使用 conn 来执行数据库操作
+    cursor = conn.cursor()
+    # 执行查询
+    cursor.execute("SELECT * FROM softwareproduct;")
+    # 获取所有查询结果
+    results = cursor.fetchall()
+    # 打印结果
+    for row in results:
+        print(row)
+except Exception as e:
+    print("An error occurred:", e)
+finally:
+    # 确保游标和连接关闭
+    if cursor:
+        cursor.close()
+    if conn:
+        conn.close()
 
 
 
