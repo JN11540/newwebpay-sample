@@ -40,6 +40,31 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 
+
+import psycopg2
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+# 連接到資料庫
+conn = psycopg2.connect(DATABASE_URL)
+
+# 使用 conn 來執行資料庫操作
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM member;")
+results = cursor.fetchall()
+
+# 關閉連接
+cursor.close()
+conn.close()
+
+
+
+
+
+
+
+
+
 # ------------------------- [設定] -> [購買軟體產品] 首頁 -------------------------
 @index_bp.get("/")
 async def get_index(request: Request):
