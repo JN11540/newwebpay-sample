@@ -48,22 +48,18 @@ async def get_index(request: Request):
     softwareproductnamelist = []
     descriptionlist = []
     pricelist = []
-
     try:
         # Connect to the database
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
-
         # Execute query to retrieve data
         cursor.execute("SELECT softwareproductname, description, price FROM softwareproduct;")
         results = cursor.fetchall()
-
         # Extract data into separate lists
         for row in results:
             softwareproductnamelist.append(row[0])
             descriptionlist.append(row[1])
             pricelist.append(row[2])
-
     except Exception as e:
         print("An error occurred:", e)
     finally:
@@ -71,7 +67,6 @@ async def get_index(request: Request):
             cursor.close()
         if conn:
             conn.close()
-
     # Pass the data to the template
     return templates.TemplateResponse("index.html", {
         "request": request,
@@ -89,7 +84,7 @@ async def get_index(request: Request):
 
 
 
-# 在 [設定] -> [購買軟體產品] 首頁，讓使用者輸入訂單資訊的 API
+# 在 [設定] -> [購買軟體產品] 首頁，讓使用者點選軟體產品訂單的 API
 orders: Dict[int, dict] = {}
 class OrderForm(BaseModel):
     Email: str
