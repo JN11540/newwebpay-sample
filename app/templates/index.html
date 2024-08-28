@@ -18,11 +18,11 @@
           </tr>
       </thead>
       <tbody>
-          {% for name, desc, price in zip(softwareproductnamelist, descriptionlist, pricelist) %}
+          {% for i in range(softwareproductnamelist|length) %}
           <tr>
-              <td>{{ name }}</td>
-              <td>{{ desc }}</td>
-              <td>{{ price }}</td>
+              <td>{{ softwareproductnamelist[i] }}</td>
+              <td>{{ descriptionlist[i] }}</td>
+              <td>{{ pricelist[i] }}</td>
           </tr>
           {% endfor %}
       </tbody>
