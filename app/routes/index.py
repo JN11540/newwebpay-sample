@@ -11,7 +11,7 @@ import hmac
 from Crypto.Cipher import AES
 import base64
 from Crypto.Util.Padding import pad
-
+import psycopg2
 
 
 # 加載環境變量
@@ -19,14 +19,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 取得環境變數
-MerchantID = os.getenv("MerchantID")    # 商店 ID
-HASHKEY = os.getenv("HASHKEY")          # hashkey
-HASHIV = os.getenv("HASHIV")            # hashIV
-Version = os.getenv("Version")          # 藍新金流平台 API 版本號
-PayGateWay = os.getenv("PayGateWay")    # 蘭新金流平台支付系統的網址
-NotifyUrl = os.getenv("NotifyUrl")      # 支付完成後伺服器接收通知的 URL
-ReturnUrl = os.getenv("ReturnUrl")      # 支付完成後用戶重定向的 URL
-
+MerchantID = os.getenv("MerchantID")        # 商店 ID
+HASHKEY = os.getenv("HASHKEY")              # hashkey
+HASHIV = os.getenv("HASHIV")                # hashIV
+Version = os.getenv("Version")              # 藍新金流平台 API 版本號
+PayGateWay = os.getenv("PayGateWay")        # 蘭新金流平台支付系統的網址
+NotifyUrl = os.getenv("NotifyUrl")          # 支付完成後伺服器接收通知的 URL
+ReturnUrl = os.getenv("ReturnUrl")          # 支付完成後用戶重定向的 URL
+DATABASE_URL = os.getenv('DATABASE_URL')    # 連接 Railway PostgreSQL 資料庫的網址
 
 
 
@@ -41,18 +41,16 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 
-import psycopg2
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 # 連接到資料庫
 conn = psycopg2.connect(DATABASE_URL)
-
 # 使用 conn 來執行資料庫操作
 cursor = conn.cursor()
 cursor.execute("SELECT * FROM member;")
 results = cursor.fetchall()
-
+print(results)
 # 關閉連接
 cursor.close()
 conn.close()
