@@ -7,20 +7,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
 </head>
 <body>
-    <form action="/createOrder" method="post">
-      <div>
-        email
-        <input type="email" name="Email" value="" />
-      </div>
-      <div>
-        Amt
-        <input type="number" name="Amt" value="1000" />
-      </div>
-      <div>
-        ItemDesc
-        <input type="text" name="ItemDesc" value="測試商品" />
-      </div>
-      <button type="submit">送出</button>
-    </form>
+
+  <h1>Software Products</h1>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>軟體產品</th>
+              <th>描述</th>
+              <th>價錢</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for name, desc, price in zip(softwareproductnamelist, descriptionlist, pricelist) %}
+          <tr>
+              <td>{{ name }}</td>
+              <td>{{ desc }}</td>
+              <td>{{ price }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <form action="/createOrder" method="post">
+    <div>
+      email
+      <input type="email" name="Email" value="" />
+    </div>
+    <div>
+      Amt
+      <input type="number" name="Amt" value="1000" />
+    </div>
+    <div>
+      ItemDesc
+      <input type="text" name="ItemDesc" value="測試商品" />
+    </div>
+    <button type="submit">送出</button>
+  </form>
 </body>
 </html>

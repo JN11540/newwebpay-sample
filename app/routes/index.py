@@ -42,41 +42,42 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 
-
-
-try:
-    # 连接到数据库
-    conn = psycopg2.connect(DATABASE_URL)
-    # 使用 conn 来执行数据库操作
-    cursor = conn.cursor()
-    # 执行查询
-    cursor.execute("SELECT * FROM softwareproduct;")
-    # 获取所有查询结果
-    results = cursor.fetchall()
-    # 打印结果
-    for row in results:
-        print(row)
-except Exception as e:
-    print("An error occurred:", e)
-finally:
-    # 确保游标和连接关闭
-    if cursor:
-        cursor.close()
-    if conn:
-        conn.close()
-
-
-
-
-
-
-
-
-
 # ------------------------- [設定] -> [購買軟體產品] 首頁 -------------------------
 @index_bp.get("/")
 async def get_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "title": "FastAPI"})
+    softwareproductnamelist = []
+    descriptionlist = []
+    pricelist = []
+    try:
+        # Connect to the database
+        conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
+        # Execute query to retrieve data
+        cursor.execute("SELECT softwareproductname, description, price FROM softwareproduct;")
+        results = cursor.fetchall()
+        # Extract data into separate lists
+        for row in results:
+            softwareproductnamelist.append(row[0])
+            descriptionlist.append(row[1])
+            pricelist.append(row[2])
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    # Pass the data to the template
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "softwareproductnamelist": softwareproductnamelist,
+        "descriptionlist": descriptionlist,
+        "pricelist": pricelist
+    })
+
+
+
+
 
 
 
