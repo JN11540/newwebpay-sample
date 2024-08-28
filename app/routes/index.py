@@ -1,5 +1,5 @@
 # app/routes/index.py
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
@@ -96,7 +96,30 @@ class OrderForm(BaseModel):
     Amt: int
     ItemDesc: str
 @index_bp.post("/createOrder")
-async def create_order(request: Request, Email: str = Form(...), Amt: int = Form(...), ItemDesc: str = Form(...)):
+async def create_order(request: Request):
+    req = await request.json()
+    ItemDesc = req.get("softwareproductname")
+    Amt = req.get("price")
+    try:
+        # Connect to the database
+        conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
+        # Find the email of the active member
+        cursor.execute("SELECT email FROM member WHERE isactive = true;")
+        member_email = cursor.fetchone()
+        if not member_email:
+            raise HTTPException(status_code=404, detail="No active member found")
+        # Extract the email
+        Email = member_email[0]
+    except Exception as e:
+        print("An error occurred:", e)
+        raise HTTPException(status_code=500, detail="Failed to create order")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+        
     TimeStamp = int(time.time())
     order = {
         "Email": Email,
