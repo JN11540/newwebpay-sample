@@ -206,7 +206,7 @@ async def newebpay_return(request: Request):
     status_info = parsed_data.get('Status', [''])[0]
 
     # 傳遞 status_info 給前端模板
-    return templates.TemplateResponse("index.html", {"request": request, "status_info": status_info})
+    return templates.TemplateResponse("success.html", {"request": request, "status_info": status_info})
     
 
 
