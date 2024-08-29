@@ -224,15 +224,15 @@ async def newebpay_notify(request: Request):
     trade_sha = parsed_data.get('TradeSha', [''])[0]
     # 解密交易內容
     data = create_aes_decrypt(trade_info)
-    print('data:', data)
     # 将data从JSON字符串解析为Python字典
     data_dict = json.loads(data)
     # 提取MerchantOrderNo的值
     merchant_order_no = data_dict.get("Result", {}).get("MerchantOrderNo", "")
-    print('merchant_order_no:', merchant_order_no)
-    print('orders:', orders)
+    # 提取 orders 中的 MerchantOrderNo
+    for order_no, order_data in orders.items():
+        extracted_merchant_order_no = order_data.get('MerchantOrderNo', '')
     # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
-    if merchant_order_no not in orders:
+    if merchant_order_no != extracted_merchant_order_no:
         print('找不到訂單')
         return {}
     # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
