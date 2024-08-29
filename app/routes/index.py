@@ -228,6 +228,7 @@ async def newebpay_notify(request: Request):
     data_dict = json.loads(data)
     # 提取MerchantOrderNo的值
     merchant_order_no = data_dict.get("Result", {}).get("MerchantOrderNo", "")
+    print(merchant_order_no)
     # 提取 orders 中的 MerchantOrderNo
     for order_no, order_data in orders.items():
         extracted_merchant_order_no = order_data.get('MerchantOrderNo', '')
