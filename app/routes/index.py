@@ -219,6 +219,7 @@ async def newebpay_notify(request: Request):
     body_str = body.decode('utf-8')  # 將字節數據解碼為字符串
     # 解析URL編碼的字符串為字典
     parsed_data = parse_qs(body_str)
+    print('notify data: ', parsed_data)
     # 提取TradeInfo的值
     trade_info = parsed_data.get('TradeInfo', [''])[0]
     trade_sha = parsed_data.get('TradeSha', [''])[0]
@@ -226,6 +227,7 @@ async def newebpay_notify(request: Request):
     data = create_aes_decrypt(trade_info)
     # 将data从JSON字符串解析为Python字典
     data_dict = json.loads(data)
+    print('data: ', data_dict)
     # 提取MerchantOrderNo的值
     merchant_order_no = data_dict.get("Result", {}).get("MerchantOrderNo", "")
     # 提取 orders 中的 MerchantOrderNo
@@ -237,11 +239,10 @@ async def newebpay_notify(request: Request):
         return {}
     # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
     this_sha_encrypt = create_sha_encrypt(trade_info)
-    print('this_sha_encrypt: ', this_sha_encrypt)
-    print('trade_sha: ', trade_sha)
     if this_sha_encrypt != trade_sha:
         print('付款失敗：TradeSha 不一致')
         return {}
+    print('付款完成，訂單：', orders)
     return {}
 # 解密方法
 def create_aes_decrypt(TradeInfo):
