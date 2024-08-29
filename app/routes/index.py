@@ -230,11 +230,9 @@ async def newebpay_notify(request: Request):
     print('data: ', data_dict)
     # 提取MerchantOrderNo的值
     merchant_order_no = data_dict.get("Result", {}).get("MerchantOrderNo", "")
-    print('merchant_order_no: ', merchant_order_no)
     # 提取 orders 中的 MerchantOrderNo
     for order_no, order_data in orders.items():
         extracted_merchant_order_no = order_data.get('MerchantOrderNo', '')
-    print('extracted_merchant_order_no: ', extracted_merchant_order_no)
     # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
     if str(merchant_order_no) != str(extracted_merchant_order_no):
         print('找不到訂單')
@@ -245,7 +243,7 @@ async def newebpay_notify(request: Request):
         print('付款失敗：TradeSha 不一致')
         return {}
     print('付款完成，訂單：', orders)
-    
+    orders = {}
     return {}
 # 解密方法
 def create_aes_decrypt(TradeInfo):
