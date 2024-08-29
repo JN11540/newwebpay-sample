@@ -12,6 +12,7 @@ from Crypto.Cipher import AES
 import base64
 from Crypto.Util.Padding import pad
 import psycopg2
+from urllib.parse import parse_qs
 
 
 # 加載環境變量
@@ -215,8 +216,17 @@ async def newebpay_return(request: Request):
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
-    body = await request.body()  # 這將返回原始的字節數據
-    print('req.body notify data', body.decode('utf-8'))  # 將字節數據解碼為字符串
+    body = await request.body()  # 獲取原始的字節數據
+    body_str = body.decode('utf-8')  # 將字節數據解碼為字符串
+    # print('req.body notify data', body_str)
+    # 解析URL編碼的字符串為字典
+    parsed_data = parse_qs(body_str)
+    # 提取TradeInfo的值
+    trade_info = parsed_data.get('TradeInfo', [''])[0]
+    print('TradeInfo:', trade_info)
+    trade_sha = parsed_data.get('TradeSha', [''])[0]
+    print('TradeSha:', trade_sha)
+    
     # # 解密交易內容
     # data = create_aes_decrypt(response.TradeInfo)
     # print('data:', data)
