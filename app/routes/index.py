@@ -213,16 +213,10 @@ async def newebpay_return(request: Request):
 # 蘭新金流平台支付系統會發以下 API 通知 index.py 這隻伺服器程式
 
 # 通知確認交易
-class NotifyRequest(BaseModel):
-    Status: str
-    MerchantID: str
-    Version: str
-    TradeInfo: str
-    TradeSha: str
 @index_bp.post("/newebpay_notify")
-async def newebpay_notify(request: NotifyRequest):
-    print('req.body notify data', request)
-    response = request
+async def newebpay_notify(request: Request):
+    response = await request.json()
+    print('req.body notify data', response)
     # 解密交易內容
     data = create_aes_decrypt(response.TradeInfo)
     print('data:', data)
