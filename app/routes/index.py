@@ -198,6 +198,11 @@ async def check_order(request: Request, id: int):
 # 交易成功
 @index_bp.post("/newebpay_return")
 async def newebpay_return(request: Request):
+    body = await request.body()  # 獲取原始的字節數據
+    body_str = body.decode('utf-8')  # 將字節數據解碼為字符串
+    # 解析URL編碼的字符串為字典
+    parsed_data = parse_qs(body_str)
+    print('return data: ', parsed_data)
     return templates.TemplateResponse("success.html", {"request": request, "title": "FastAPI"})
 
 
