@@ -231,6 +231,7 @@ async def newebpay_notify(request: Request):
     # 提取 orders 中的 MerchantOrderNo
     for order_no, order_data in orders.items():
         extracted_merchant_order_no = order_data.get('MerchantOrderNo', '')
+    print(extracted_merchant_order_no)
     # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
     if merchant_order_no != extracted_merchant_order_no:
         print('找不到訂單')
