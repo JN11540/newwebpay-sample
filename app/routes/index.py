@@ -215,6 +215,9 @@ async def newebpay_return(request: Request):
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request, TradeInfo: str = Form(...)):
+
+    print(TradeInfo)
+
     # 解密交易資訊
     data = create_aes_decrypt(TradeInfo)
     if not data:
