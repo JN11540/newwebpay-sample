@@ -215,6 +215,7 @@ async def newebpay_return(request: Request):
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
+    global orders
     body = await request.body()  # 獲取原始的字節數據
     body_str = body.decode('utf-8')  # 將字節數據解碼為字符串
     # 解析URL編碼的字符串為字典
