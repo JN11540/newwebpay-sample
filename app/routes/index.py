@@ -195,7 +195,9 @@ async def check_order(request: Request, id: int):
 
 # ------------------------- [設定] -> [購買軟體產品] 第四頁 (顯示結帳完成的頁面) -------------------------
 
-# 交易成功
+# 使用者在蘭新金流平台支付系統的網址 https://ccore.newebpay.com/MPG/mpg_gateway 購買完成後
+# 蘭新金流平台支付系統會發布以下 API
+# 通知使用者
 @index_bp.post("/newebpay_return")
 async def newebpay_return(request: Request):
     body = await request.body()  # 獲取原始的字節數據
@@ -204,7 +206,6 @@ async def newebpay_return(request: Request):
     parsed_data = parse_qs(body_str)
     print('return data: ', parsed_data)
     status_info = parsed_data.get('Status', [''])[0]
-
     # 傳遞 status_info 給前端模板
     return templates.TemplateResponse("success.html", {"request": request, "status_info": status_info})
     
@@ -216,12 +217,9 @@ async def newebpay_return(request: Request):
 
 
 
-
-
-
 # 使用者在蘭新金流平台支付系統的網址 https://ccore.newebpay.com/MPG/mpg_gateway 購買完成後
 # 蘭新金流平台支付系統會發布以下 API
-# 通知確認交易
+# 通知這支伺服器程式
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
     global orders
@@ -252,7 +250,7 @@ async def newebpay_notify(request: Request):
     if this_sha_encrypt != trade_sha:
         print('付款失敗：TradeSha 不一致')
         return {}
-    print('付款完成，訂單：', orders)
+    print('訂單：', orders)
     orders = {}
     return {}
 # 解密方法
