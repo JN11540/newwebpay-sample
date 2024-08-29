@@ -218,32 +218,28 @@ async def newebpay_return(request: Request):
 async def newebpay_notify(request: Request):
     body = await request.body()  # 獲取原始的字節數據
     body_str = body.decode('utf-8')  # 將字節數據解碼為字符串
-    # print('req.body notify data', body_str)
     # 解析URL編碼的字符串為字典
     parsed_data = parse_qs(body_str)
     # 提取TradeInfo的值
     trade_info = parsed_data.get('TradeInfo', [''])[0]
-    print('TradeInfo:', trade_info)
     trade_sha = parsed_data.get('TradeSha', [''])[0]
-    print('TradeSha:', trade_sha)
-    
-    # # 解密交易內容
-    # data = create_aes_decrypt(response.TradeInfo)
-    # print('data:', data)
-    # # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
-    # if data.get('Result', {}).get('MerchantOrderNo') not in orders:
-    #     print('找不到訂單')
-    #     return {}
-    # # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
-    # this_sha_encrypt = create_sha_encrypt(response.TradeInfo)
-    # if this_sha_encrypt != response.TradeSha:
-    #     print('付款失敗：TradeSha 不一致')
-    #     return {}
-    # # 交易完成，將成功資訊儲存於資料庫
-    # order_no = data['Result']['MerchantOrderNo']
-    # print('付款完成，訂單：', orders[order_no])
-    # # 這裡可以加入更新訂單狀態的邏輯
-    # orders[order_no]['status'] = 'completed'
+    # 解密交易內容
+    data = create_aes_decrypt(trade_info)
+    print('data:', data)
+    # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
+    if data.get('Result', {}).get('MerchantOrderNo') not in orders:
+        print('找不到訂單')
+        return {}
+    # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
+    this_sha_encrypt = create_sha_encrypt(trade_info)
+    if this_sha_encrypt != trade_sha:
+        print('付款失敗：TradeSha 不一致')
+        return {}
+    # 交易完成，將成功資訊儲存於資料庫
+    order_no = data['Result']['MerchantOrderNo']
+    print('付款完成，訂單：', orders[order_no])
+    # 這裡可以加入更新訂單狀態的邏輯
+    orders[order_no]['status'] = 'completed'
     return {}
 # 解密方法
 def create_aes_decrypt(TradeInfo):
