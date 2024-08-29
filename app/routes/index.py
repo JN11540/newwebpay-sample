@@ -215,8 +215,8 @@ async def newebpay_return(request: Request):
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
-    response = request
-    print('req.body notify data', response)
+    body = await request.body()  # 這將返回原始的字節數據
+    print('req.body notify data', body.decode('utf-8'))  # 將字節數據解碼為字符串
     # # 解密交易內容
     # data = create_aes_decrypt(response.TradeInfo)
     # print('data:', data)
