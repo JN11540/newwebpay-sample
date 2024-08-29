@@ -219,14 +219,27 @@ async def newebpay_notify(request: Request, TradeInfo: str = Form(...)):
     data = create_aes_decrypt(TradeInfo)
     if not data:
         return "Invalid TradeInfo"
+    
     # 解析解密后的数据
-    data_dict = dict(item.split('=') for item in data.split('&'))
+    try:
+        data_dict = {}
+        for item in data.split('&'):
+            if '=' in item:
+                key, value = item.split('=', 1)  # 使用 `1` 确保只分割一次
+                data_dict[key] = value
+            else:
+                print(f"Unexpected format in item: {item}")  # 或者用其他方式记录
+    except Exception as e:
+        return f"Error parsing TradeInfo: {e}"
+    
     order_no = data_dict.get("MerchantOrderNo")
     if not orders.get(int(order_no)):
         return "Order not found"
+    
     this_sha_encrypt = create_sha_encrypt(TradeInfo)
     if this_sha_encrypt != request.form.get("TradeSha"):
         return "Invalid TradeSha"
+    
     # 處理交易成功邏輯
     return "OK"
 # 解密方法
