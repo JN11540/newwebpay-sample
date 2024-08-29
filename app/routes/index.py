@@ -211,7 +211,7 @@ async def newebpay_return(request: Request):
 
 
 # 使用者在蘭新金流平台支付系統的網址 https://ccore.newebpay.com/MPG/mpg_gateway 購買完成後
-# 蘭新金流平台支付系統會發以下 API 通知 index.py 這隻伺服器程式
+# 蘭新金流平台支付系統會發布以下 API
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
@@ -243,6 +243,7 @@ async def newebpay_notify(request: Request):
         print('付款失敗：TradeSha 不一致')
         return {}
     print('付款完成，訂單：', orders)
+    orders: Dict[int, dict] = {}
     return {}
 # 解密方法
 def create_aes_decrypt(TradeInfo):
