@@ -203,7 +203,11 @@ async def newebpay_return(request: Request):
     # 解析URL編碼的字符串為字典
     parsed_data = parse_qs(body_str)
     print('return data: ', parsed_data)
-    return templates.TemplateResponse("success.html", {"request": request, "title": "FastAPI"})
+    status_info = parsed_data.get('Status', [''])[0]
+
+    # 傳遞 status_info 給前端模板
+    return templates.TemplateResponse("index.html", {"request": request, "status_info": status_info})
+    
 
 
 

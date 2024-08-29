@@ -1,11 +1,17 @@
-<!-- app/templates/success.html -->
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>結帳狀態</title>
 </head>
 <body>
-    <h1>結帳成功</h1>
+    <h1>
+        {% if status_info == "SUCCESS" %}
+            結帳成功
+        {% else %}
+            結帳失敗
+        {% endif %}
+    </h1>
 </body>
 </html>
