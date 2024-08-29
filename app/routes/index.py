@@ -213,33 +213,19 @@ async def newebpay_return(request: Request):
 # 蘭新金流平台支付系統會發以下 API 通知 index.py 這隻伺服器程式
 
 # 通知確認交易
+class NotifyRequest(BaseModel):
+    TradeInfo: str
+    TradeSha: str
 @index_bp.post("/newebpay_notify")
-async def newebpay_notify(request: Request, TradeInfo: str = Form(...)):
+async def newebpay_notify(request: NotifyRequest):
+    print('req.body notify data', request)
+    response = request
 
-    print(TradeInfo)
-
-    # 解密交易資訊
-    data = create_aes_decrypt(TradeInfo)
-    if not data:
-        return "Invalid TradeInfo"
+    # 解密交易內容
+    data = create_aes_decrypt(response.TradeInfo)
+    print('data:', data)
     
-    # 解析解密后的数据
-    try:
-        data_dict = {}
-        for item in data.split('&'):
-            if '=' in item:
-                key, value = item.split('=', 1)  # 使用 `1` 确保只分割一次
-                data_dict[key] = value
-            else:
-                print(f"Unexpected format in item: {item}")  # 或者用其他方式记录
-    except Exception as e:
-        return f"Error parsing TradeInfo: {e}"
-    
-    order_no = data_dict.get("MerchantOrderNo")
-    if not orders.get(int(order_no)):
-        return "Order not found"
-    
-    this_sha_encrypt = create_sha_encrypt(TradeInfo)
+    this_sha_encrypt = create_sha_encrypt(response.TradeInfo)
     if this_sha_encrypt != request.form.get("TradeSha"):
         return "Invalid TradeSha"
     
