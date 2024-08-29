@@ -13,7 +13,7 @@ import base64
 from Crypto.Util.Padding import pad
 import psycopg2
 from urllib.parse import parse_qs
-
+import json
 
 # 加載環境變量
 from dotenv import load_dotenv
@@ -212,7 +212,6 @@ async def newebpay_return(request: Request):
 
 # 使用者在蘭新金流平台支付系統的網址 https://ccore.newebpay.com/MPG/mpg_gateway 購買完成後
 # 蘭新金流平台支付系統會發以下 API 通知 index.py 這隻伺服器程式
-
 # 通知確認交易
 @index_bp.post("/newebpay_notify")
 async def newebpay_notify(request: Request):
@@ -226,21 +225,19 @@ async def newebpay_notify(request: Request):
     # 解密交易內容
     data = create_aes_decrypt(trade_info)
     print('data:', data)
-    # print('MerchantOrderNo:', data.get('Result', {}).get('MerchantOrderNo'))
-    # # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
-    # if data.get('Result', {}).get('MerchantOrderNo') not in orders:
-    #     print('找不到訂單')
-    #     return {}
-    # # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
-    # this_sha_encrypt = create_sha_encrypt(trade_info)
-    # if this_sha_encrypt != trade_sha:
-    #     print('付款失敗：TradeSha 不一致')
-    #     return {}
-    # # 交易完成，將成功資訊儲存於資料庫
-    # order_no = data['Result']['MerchantOrderNo']
-    # print('付款完成，訂單：', orders[order_no])
-    # # 這裡可以加入更新訂單狀態的邏輯
-    # orders[order_no]['status'] = 'completed'
+    # 将data从JSON字符串解析为Python字典
+    data_dict = json.loads(data)
+    # 提取MerchantOrderNo的值
+    merchant_order_no = data_dict.get("Result", {}).get("MerchantOrderNo", "")
+    # 取得交易內容，並查詢本地端資料庫是否有相符的訂單
+    if merchant_order_no not in orders:
+        print('找不到訂單')
+        return {}
+    # 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
+    this_sha_encrypt = create_sha_encrypt(trade_info)
+    if this_sha_encrypt != trade_sha:
+        print('付款失敗：TradeSha 不一致')
+        return {}
     return {}
 # 解密方法
 def create_aes_decrypt(TradeInfo):
